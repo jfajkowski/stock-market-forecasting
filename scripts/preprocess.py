@@ -19,3 +19,9 @@ tokens_without_stopwords_set = tokens_set.difference(stopwords.words('english'))
 tokens_without_stopwords_counter = Counter({k:tokens_counter[k] for k in tokens_without_stopwords_set if k in tokens_counter})
 tokens_filtered_set = set(filter(lambda t: len(t) > 2, tokens_without_stopwords_set))
 tokens_filtered_counter = Counter({k:tokens_counter[k] for k in tokens_filtered_set if k in tokens_counter})
+
+with open('./data/external/cc.en.300.vec.sub', mode='w') as output:
+    for line in open('./data/external/cc.en.300.vec', mode='r'):
+        if (line.rstrip('\n').split()[0].lower() in tokens_filtered_set):
+            output.write(line)
+len(open('./data/external/cc.en.300.vec.sub').readlines())
