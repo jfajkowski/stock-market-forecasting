@@ -15,4 +15,4 @@ for i, r in df.iterrows():
 df_out = pd.DataFrame(data=matrix)
 df_out['Class'] = df['Class']
 
-df_out.to_csv(path_or_buf='./data/processed/Outcome.csv', index=False)
+df_out.to_csv(path_or_buf='./data/processed/Spacy.csv', index=False)
