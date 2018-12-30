@@ -6,12 +6,12 @@ from keras.utils import to_categorical
 from keras_preprocessing.sequence import TimeseriesGenerator
 from sklearn.model_selection import train_test_split
 
-window_size = 8
+window_size = 2
 batch_size = 128
-epochs_num = 42
+epochs_num = 30
 split = 0.8
 
-df = pd.read_csv('./data/processed/Outcome.csv')
+df = pd.read_csv('./data/processed/Doc2Vec.csv')
 
 print('Number of samples:', len(df))
 

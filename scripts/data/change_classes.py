@@ -20,7 +20,7 @@ djia.loc[(djia[ChangeColumn] >= 0.005) & (djia[ChangeColumn] < 0.025), ClassColu
 djia.loc[0.025 <= djia[ChangeColumn], ClassColumn] = 4
 
 #join new classes with combined file
-combined = combined.join(djia.set_index('Date')[ClassColumn], on='Date')
+combined = combined.join(djia.set_index('Date'), on='Date')
 combined = combined.drop(['Label'], axis=1)
 
 combined.to_csv(path_or_buf='./data/interim/Outcome.csv', index=False)
