@@ -10,15 +10,21 @@ combined = pd.read_csv("./data/raw/Combined_News_DJIA.csv", sep=',')
 
 #calculate relative change in index value
 diff = ((djia['Open'] - djia['Close']) / djia['Open'])
-diff_abs = abs(diff)
+diff_abs = sorted(abs(diff))
+# diff_abs = sorted(diff[diff > 0])
+
+chunk_size = len(diff_abs) / 5
+split_point_inner = diff_abs[int(chunk_size)]
+split_point_outer = diff_abs[int(3 * chunk_size)]
+
 djia[ChangeColumn] = diff
 
 #assign new classes
-djia.loc[djia[ChangeColumn] < -diff_abs[1326], ClassColumn] = 0
-djia.loc[(djia[ChangeColumn] >= -diff_abs[1326]) & (djia[ChangeColumn] < -diff_abs[663]), ClassColumn] = 1
-djia.loc[(djia[ChangeColumn] >= -diff_abs[663]) & (djia[ChangeColumn] < diff_abs[663]), ClassColumn] = 2
-djia.loc[(djia[ChangeColumn] >= diff_abs[663]) & (djia[ChangeColumn] < diff_abs[1326]), ClassColumn] = 3
-djia.loc[diff_abs[1326] <= djia[ChangeColumn], ClassColumn] = 4
+djia.loc[djia[ChangeColumn] < -split_point_outer, ClassColumn] = 0
+djia.loc[(djia[ChangeColumn] >= -split_point_outer) & (djia[ChangeColumn] < -split_point_inner), ClassColumn] = 1
+djia.loc[(djia[ChangeColumn] >= -split_point_inner) & (djia[ChangeColumn] < split_point_inner), ClassColumn] = 2
+djia.loc[(djia[ChangeColumn] >= split_point_inner) & (djia[ChangeColumn] < split_point_outer), ClassColumn] = 3
+djia.loc[split_point_outer <= djia[ChangeColumn], ClassColumn] = 4
 
 #join new classes with combined file
 combined = combined.join(djia.set_index('Date'), on='Date')
