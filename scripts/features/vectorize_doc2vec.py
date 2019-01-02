@@ -5,10 +5,10 @@ from gensim.models.doc2vec import TaggedDocument
 
 df = pd.read_csv('./data/processed/Stripped.csv')
 headlines = df.loc[:, 'Top1':'Top25'].apply(lambda x: ' '.join([str(s) for s in x]), axis=1)
-documents = [TaggedDocument(doc, [i]) for i, doc in enumerate(headlines)]
-model = Doc2Vec(documents, vector_size=300, window=3)
+documents = [TaggedDocument(doc.split(), [i]) for i, doc in enumerate(headlines)]
+model = Doc2Vec(documents, vector_size=128, window=3)
 
-df['Vector'] = list(map(lambda x: model.infer_vector(x.split()), headlines))
+df['Vector'] = [model.docvecs[i] for i in range(len(headlines))]
 
 matrix = np.zeros((len(df), df['Vector'][0].shape[0]))
 for i, r in df.iterrows():
