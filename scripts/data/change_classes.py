@@ -30,7 +30,7 @@ djia.loc[split_point_outer <= djia[ChangeColumn], ClassColumn] = 4
 combined = combined.join(djia.set_index('Date'), on='Date')
 combined = combined.drop(['Label'], axis=1)
 
-combined.to_csv(path_or_buf='./data/interim/Outcome.csv', index=False)
+combined.to_csv(path_or_buf='./data/interim/Classes_Changed.csv', index=False)
 
 print(djia.groupby([ClassColumn]).size())
 
