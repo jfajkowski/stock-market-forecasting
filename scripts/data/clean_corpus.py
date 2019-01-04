@@ -121,7 +121,7 @@ def abbreviate(text):
     return JOIN_PATTERN.join(correct_words)
 
 
-corpus = corpus.applymap(abbreviate)
+# corpus = corpus.applymap(abbreviate)
 
 # %% Tokenize documents using NLTK
 corpus = corpus.applymap(lambda document: word_tokenize(document))
@@ -136,6 +136,13 @@ corpus = corpus.applymap(lambda document: [word for word in document if word not
 # %% Use lemmatizer to reduce dimensionality
 lemmatizer = WordNetLemmatizer()
 corpus = corpus.applymap(lambda document: [lemmatizer.lemmatize(word) for word in document])
+
+# %% Remove non alphanumeric characters
+sanitize = lambda word: re.sub(r'[^0-9A-Za-z ]+', ' ', word).strip()
+corpus = corpus.applymap(lambda document: [sanitize(word) for word in document])
+
+# %% Remove tokens shorter than 3
+corpus = corpus.applymap(lambda document: [word for word in document if len(word) > 3])
 
 
 # %% Print corpus statistics
@@ -155,5 +162,5 @@ def stats(corpus):
 stats(corpus.values.flatten())
 
 # %% Persist cleaned data
-df.loc[:, 'Top1':'Top25'] = corpus
+df.loc[:, 'Top1':'Top25'] = corpus.applymap(lambda x: ' '.join(x))
 df.to_csv(path_or_buf='./data/interim/Corpus_Cleaned.csv', index=False)
