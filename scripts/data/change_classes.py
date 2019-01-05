@@ -9,7 +9,7 @@ djia = pd.read_csv("./data/raw/DJIA_table.csv", sep=',')
 combined = pd.read_csv("./data/raw/Combined_News_DJIA.csv", sep=',')
 
 #calculate relative change in index value
-diff = ((djia['Open'] - djia['Close']) / djia['Open'])
+diff = ((djia['Close'] - djia['Open']) / djia['Open'])
 diff_abs = sorted(abs(diff))
 # diff_abs = sorted(diff[diff > 0])
 
