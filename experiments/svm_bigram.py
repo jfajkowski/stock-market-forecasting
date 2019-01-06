@@ -7,10 +7,11 @@ from sklearn.pipeline import Pipeline
 from sklearn.svm import SVC, LinearSVC
 from sklearn.multiclass import OneVsRestClassifier
 
-df = pd.read_csv('./data/processed/Outcome_stripped.csv', lineterminator='\n', sep=',')
+df = pd.read_csv('../scripts/data/data/interim/Corpus_Cleaned.csv', lineterminator='\n', sep=',')
+df.columns = df.columns.str.strip()
 
 raw = df.loc[:, 'Top1':'Top25'].apply(lambda x: ' '.join([str(s) for s in x]), axis=1)
-y = df['Label']
+y = df['Class']
 
 raw_train, raw_test, y_train, y_test = train_test_split(raw, y, train_size=0.8, shuffle=False)
 

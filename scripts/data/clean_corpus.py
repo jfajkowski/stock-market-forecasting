@@ -96,7 +96,7 @@ SPLIT_PATTERN = re.compile(r'(\W+)')
 JOIN_PATTERN = ''
 TRIE = Trie(longest_match=True)
 
-with open('./data/external/abbreviations.csv') as f_in:
+with open('./data/external/abbreviations.csv', encoding="utf8") as f_in:
     for line in f_in:
         line = line.rstrip('\n')
         phrase, abbreviation = list(map(SPLIT_PATTERN.split, line.split(',')))
@@ -121,6 +121,34 @@ def abbreviate(text):
     return JOIN_PATTERN.join(correct_words)
 
 
+currency_dict = {}
+currency_regex = ''
+
+SPACE_JOIN_PATTERN = ' '
+
+with open('./data/external/currencies.csv', encoding="utf8") as f_in:
+    lines = (line.rstrip('\n') for line in f_in if line.rstrip('\n'))
+    symbols = []
+
+    # skip headers
+    lines.__next__()
+    for line in lines:
+        symbol, currency = line.split(',')
+        currency_dict[symbol] = currency
+        symbols.append(symbol)
+
+    currency_regex = "([" + '|'.join(symbols) + "])"
+
+def currenciate(text):
+    extracted_currencies = re.split(currency_regex, text)
+    translated = [currency_dict[word] if word in currency_dict else word for word in extracted_currencies]
+    joined = SPACE_JOIN_PATTERN.join(translated)
+
+    return re.sub(r" +", " ", joined)
+
+
+corpus = corpus.applymap(currenciate)
+
 # corpus = corpus.applymap(abbreviate)
 
 # %% Tokenize documents using NLTK
@@ -130,8 +158,8 @@ corpus = corpus.applymap(lambda document: word_tokenize(document))
 corpus = corpus.applymap(lambda document: [word.lower() for word in document])
 
 # %% Remove stopwords
-stopwords = stopwords.words('english')
-corpus = corpus.applymap(lambda document: [word for word in document if word not in stopwords])
+stoplist = stopwords.words('english')
+corpus = corpus.applymap(lambda document: [word for word in document if word not in stoplist])
 
 # %% Use lemmatizer to reduce dimensionality
 lemmatizer = WordNetLemmatizer()
