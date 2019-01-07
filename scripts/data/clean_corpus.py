@@ -152,8 +152,8 @@ def currenciate(text):
 def numbers_to_words(text):
     numbers = re.findall('[-+]?\d*\.\d+|\d*,\d+|\d+', text)
     for n in numbers:
-        n = n.replace(",", ".")
-        text = text.replace(n, " " + n2w.num2words(n) + " ")
+        convertible = n.replace(",", ".")
+        text = text.replace(n, " " + n2w.num2words(convertible) + " ", 1)
 
     return re.sub(r" +", " ", text)
 
