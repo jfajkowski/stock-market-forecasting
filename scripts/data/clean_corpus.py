@@ -3,6 +3,7 @@ import re
 
 import numpy as np
 import pandas as pd
+import num2words as n2w
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
@@ -139,6 +140,7 @@ with open('./data/external/currencies.csv', encoding="utf8") as f_in:
 
     currency_regex = "([" + '|'.join(symbols) + "])"
 
+
 def currenciate(text):
     extracted_currencies = re.split(currency_regex, text)
     translated = [currency_dict[word] if word in currency_dict else word for word in extracted_currencies]
@@ -146,6 +148,17 @@ def currenciate(text):
 
     return re.sub(r" +", " ", joined)
 
+
+def numbers_to_words(text):
+    numbers = re.findall('[-+]?\d*\.\d+|\d*,\d+|\d+', text)
+    for n in numbers:
+        n = n.replace(",", ".")
+        text = text.replace(n, " " + n2w.num2words(n) + " ")
+
+    return re.sub(r" +", " ", text)
+
+
+corpus = corpus.applymap(numbers_to_words)
 
 corpus = corpus.applymap(currenciate)
 

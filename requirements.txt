@@ -5,3 +5,4 @@ Keras
 nltk
 matplotlib
 scrapy
+num2words
