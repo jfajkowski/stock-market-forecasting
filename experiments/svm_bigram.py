@@ -15,15 +15,20 @@ y = df['Class']
 
 raw_train, raw_test, y_train, y_test = train_test_split(raw, y, train_size=0.8, shuffle=False)
 
-clf = SVC(decision_function_shape='ovr', kernel='linear')
-clf1 = LinearSVC()
-clf2 = OneVsRestClassifier(LinearSVC(class_weight='balanced'))
+function_shapes = ['ovr', 'ovo']
+kernels = ['linear', 'poly', 'rbf', 'sigmoid']
 
-model = Pipeline([
-    ('vect', CountVectorizer(ngram_range=(2, 2), stop_words='english')),
-    ('tfidf', TfidfTransformer(use_idf=False)),
-    ('scale', StandardScaler(with_mean=False)),
-    ('clf', clf),
-])
-model.fit(raw_train, y_train)
-print(accuracy_score(y_test, model.predict(raw_test)))
+for func, kernel in [(func,kernel) for func in function_shapes for kernel in kernels]:
+
+    clf = SVC(decision_function_shape=func, kernel=kernel)
+#clf1 = LinearSVC()
+#clf2 = OneVsRestClassifier(LinearSVC(class_weight='balanced'))
+
+    model = Pipeline([
+        ('vect', CountVectorizer(ngram_range=(1, 2), stop_words='english')),
+        ('tfidf', TfidfTransformer(use_idf=False)),
+        ('scale', StandardScaler(with_mean=False)),
+        ('clf', clf),
+    ])
+    model.fit(raw_train, y_train)
+    print(func + '/' + kernel + ": " + str(accuracy_score(y_test, model.predict(raw_test))))

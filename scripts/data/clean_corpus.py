@@ -131,8 +131,6 @@ with open('./data/external/currencies.csv', encoding="utf8") as f_in:
     lines = (line.rstrip('\n') for line in f_in if line.rstrip('\n'))
     symbols = []
 
-    # skip headers
-    lines.__next__()
     for line in lines:
         symbol, currency = line.split(',')
         currency_dict[symbol] = currency
