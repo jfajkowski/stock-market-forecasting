@@ -46,7 +46,7 @@ while True:
         X = vectorizer.transform([raw[-1]])
         y = classifier.predict_proba(X)
         model_output = y[0]
-        model_output_line = str(model_output)
+        model_output_line = str(list(model_output))
         connection.sendall(model_output_line.encode())
         logging.info('%s:%s sent %s', *address, model_output_line)
         connection.close()
