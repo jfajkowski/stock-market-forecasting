@@ -5,7 +5,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.svm import SVC
 from sklearn.preprocessing import StandardScaler
 
-df = pd.read_csv('../data/data/processed/Doc2Vec.csv', lineterminator='\n', sep=',')
+df = pd.read_csv('../data/data/processed/GloVe.csv', lineterminator='\n', sep=',')
 df.columns = df.columns.str.strip()
 
 print('Number of samples:', len(df))
