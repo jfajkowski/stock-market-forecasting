@@ -1,5 +1,5 @@
-import pandas as pd
 import matplotlib.pyplot as plt
+import pandas as pd
 
 ChangeColumn = 'Change'
 ClassColumn = 'Class'
@@ -30,6 +30,8 @@ djia.loc[split_point_outer <= djia[ChangeColumn], ClassColumn] = 4
 combined = combined.join(djia.set_index('Date'), on='Date')
 combined = combined.drop(['Label'], axis=1)
 
+# Sort by date ascending
+combined = combined.sort_values(['Date']).reset_index(drop=True)
 combined.to_csv(path_or_buf='./data/interim/Classes_Changed.csv', index=False)
 
 print(djia.groupby([ClassColumn]).size())
