@@ -1,9 +1,9 @@
 import copy
 import re
 
+import num2words as n2w
 import numpy as np
 import pandas as pd
-import num2words as n2w
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
@@ -26,6 +26,44 @@ def extract(document):
 
 corpus = corpus.applymap(extract)
 
+# %% Replace currency symbols with words
+currency_dict = {}
+currency_regex = ''
+
+SPACE_JOIN_PATTERN = ' '
+
+with open('./data/external/currencies.csv', encoding="utf8") as f_in:
+    lines = (line.rstrip('\n') for line in f_in if line.rstrip('\n'))
+    symbols = []
+
+    for line in lines:
+        symbol, currency = line.split(',')
+        currency_dict[symbol] = currency
+        symbols.append(symbol)
+
+    currency_regex = "([" + '|'.join(symbols) + "])"
+
+def currenciate(text):
+    extracted_currencies = re.split(currency_regex, text)
+    translated = [currency_dict[word] if word in currency_dict else word for word in extracted_currencies]
+    joined = SPACE_JOIN_PATTERN.join(translated)
+
+    return re.sub(r" +", " ", joined)
+
+
+corpus = corpus.applymap(currenciate)
+
+# %% Change existing numbers to words
+def numbers_to_words(text):
+    numbers = re.findall('[-+]?\d*\.\d+|\d*,\d+|\d+', text)
+    for n in numbers:
+        convertible = n.replace(",", ".")
+        text = text.replace(n, " " + n2w.num2words(convertible) + " ", 1)
+
+    return re.sub(r" +", " ", text)
+
+
+corpus = corpus.applymap(numbers_to_words)
 
 # %% Process all documents and abbreviate adequate words
 class Trie():
@@ -122,45 +160,7 @@ def abbreviate(text):
     return JOIN_PATTERN.join(correct_words)
 
 
-currency_dict = {}
-currency_regex = ''
-
-SPACE_JOIN_PATTERN = ' '
-
-with open('./data/external/currencies.csv', encoding="utf8") as f_in:
-    lines = (line.rstrip('\n') for line in f_in if line.rstrip('\n'))
-    symbols = []
-
-    for line in lines:
-        symbol, currency = line.split(',')
-        currency_dict[symbol] = currency
-        symbols.append(symbol)
-
-    currency_regex = "([" + '|'.join(symbols) + "])"
-
-
-def currenciate(text):
-    extracted_currencies = re.split(currency_regex, text)
-    translated = [currency_dict[word] if word in currency_dict else word for word in extracted_currencies]
-    joined = SPACE_JOIN_PATTERN.join(translated)
-
-    return re.sub(r" +", " ", joined)
-
-
-def numbers_to_words(text):
-    numbers = re.findall('[-+]?\d*\.\d+|\d*,\d+|\d+', text)
-    for n in numbers:
-        convertible = n.replace(",", ".")
-        text = text.replace(n, " " + n2w.num2words(convertible) + " ", 1)
-
-    return re.sub(r" +", " ", text)
-
-
-corpus = corpus.applymap(numbers_to_words)
-
-corpus = corpus.applymap(currenciate)
-
-# corpus = corpus.applymap(abbreviate)
+corpus = corpus.applymap(abbreviate)
 
 # %% Tokenize documents using NLTK
 corpus = corpus.applymap(lambda document: word_tokenize(document))
