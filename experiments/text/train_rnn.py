@@ -1,5 +1,5 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
 from keras.layers import Dense, CuDNNGRU
 from keras.models import Sequential
 from keras.utils import to_categorical
@@ -11,7 +11,7 @@ batch_size = 128
 epochs_num = 30
 split = 0.8
 
-df = pd.read_csv('./data/processed/Doc2Vec.csv')
+df = pd.read_csv('./data/processed/GloVe.csv')
 
 print('Number of samples:', len(df))
 
