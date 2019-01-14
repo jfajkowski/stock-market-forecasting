@@ -8,8 +8,7 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
 
-window_size = 3
-batch_size = 16
+batch_size = 8
 epochs = 4
 
 df = pd.read_csv('./data/interim/Corpus_Cleaned.csv')
@@ -19,36 +18,32 @@ y = to_categorical(df.loc[:, 'Class'])
 
 raw_train, raw_test, y_train, y_test = train_test_split(raw, y, train_size=0.8, shuffle=False)
 
-vectorizer = CountVectorizer()
+vectorizer = CountVectorizer(binary=True)
 X_train = vectorizer.fit_transform(raw_train)
 X_test = vectorizer.transform(raw_test)
 
-transformer = TfidfTransformer(use_idf=False)
+transformer = TfidfTransformer()
 X_train = transformer.fit_transform(X_train)
 X_test = transformer.transform(X_test)
 
 X_train = X_train.todense()
 X_test = X_test.todense()
-
-train_generator = TimeseriesGenerator(X_train, y_train, length=window_size,
-                                     batch_size=batch_size, shuffle=False)
-test_generator = TimeseriesGenerator(X_test, y_test, length=window_size,
-                                    batch_size=1, shuffle=False)
+y_train = np.matrix(y_train)
+y_test = np.matrix(y_test)
 
 model = Sequential()
-model.add(CuDNNGRU(128, input_shape=(window_size, X_train.shape[1],)))
+model.add(Dense(64, activation='relu', input_shape=(X_train.shape[1],)))
 model.add(Dense(64, activation='relu'))
 model.add(Dense(64, activation='relu'))
-model.add(Dense(64, activation='relu'))
-model.add(Dense(y_train.shape[1], activation='softmax'))
+model.add(Dense(y_train.shape[1], activation='sigmoid'))
 
 # Run training
-model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-model.fit_generator(train_generator, epochs=epochs)
-print(model.evaluate_generator(test_generator))
+model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
+model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size)
+print(model.evaluate(X_test, y_test))
 
-y_true = np.argmax(y_test[window_size:], axis=1)
-y_pred = np.argmax(model.predict_generator(test_generator), axis=1)
+y_true = np.argmax(y_test, axis=1)
+y_pred = np.argmax(model.predict(X_test), axis=1)
 
 print('Confusion matrix')
 print(confusion_matrix(y_true, y_pred))

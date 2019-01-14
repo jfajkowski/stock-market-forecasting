@@ -2,7 +2,7 @@ import logging
 import socket
 
 TCP_HOST = "127.0.0.1"
-TCP_PORT = 10000
+TCP_PORT = 10001
 BUFFER_SIZE = 1024
 
 logging.basicConfig(format='[%(asctime)s][%(levelname)s] %(name)s: %(message)s', level=logging.INFO)
