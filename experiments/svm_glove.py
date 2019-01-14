@@ -1,11 +1,11 @@
 import pandas as pd
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.svm import SVC
 from sklearn.preprocessing import StandardScaler
 
-df = pd.read_csv('../data/data/processed/GloVe.csv', lineterminator='\n', sep=',')
+df = pd.read_csv('../scripts/data/data/processed/GloVe.csv', lineterminator='\n', sep=',')
 df.columns = df.columns.str.strip()
 
 print('Number of samples:', len(df))
@@ -22,4 +22,6 @@ model = Pipeline([
     ('clf', clf),
 ])
 model.fit(X_train, y_train)
-print(accuracy_score(y_test, model.predict(X_test)))
+y_pred = model.predict(X_test)
+print(accuracy_score(y_test, y_pred))
+print(confusion_matrix(y_test, y_pred))
