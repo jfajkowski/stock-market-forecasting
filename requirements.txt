@@ -6,3 +6,5 @@ nltk
 matplotlib
 scrapy
 num2words
+wordcloud
+gensim

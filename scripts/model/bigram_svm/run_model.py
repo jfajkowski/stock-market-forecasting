@@ -40,8 +40,8 @@ while True:
 
         articles = sorted(model_input['articles'], key=lambda x: x['date'])
 
-        raw = list(map(lambda x: x['header'], articles))
-        y = model.predict([raw[-1]])
+        raw = ' '.join(map(lambda x: x['header'], articles))
+        y = model.predict_proba([raw])
         model_output = y[0]
         model_output_line = str(list(model_output))
         connection.sendall(model_output_line.encode())

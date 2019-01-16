@@ -1,3 +1,4 @@
+import itertools
 import json
 import logging
 import re
@@ -55,10 +56,12 @@ while True:
 
         articles = sorted(model_input['articles'], key=lambda x: x['date'])
 
-        raw = list(map(lambda x: x['header'], articles))
+        raw = []
+        for key, group in itertools.groupby(articles, lambda x: x['date']):
+            raw.append(' '.join((map(lambda x: x['header'], list(group)))))
 
         X = np.stack([list(map(lambda x: nlp(extract(x)).vector, raw))])
-        y = model.predict(X, )
+        y = model.predict_proba(X, )
         model_output = y[0]
         model_output_line = str(list(model_output))
         connection.sendall(model_output_line.encode())

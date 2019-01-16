@@ -4,7 +4,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.model_selection import train_test_split
 
-df = pd.read_csv('../scripts/data/data/interim/Corpus_Cleaned.csv', lineterminator='\n', sep=',')
+df = pd.read_csv('.data/interim/Corpus_Cleaned.csv', lineterminator='\n', sep=',')
 df.columns = df.columns.str.strip()
 
 raw = df.loc[:, 'Top1':'Top25'].apply(lambda x: ' '.join([str(s) for s in x]), axis=1)

@@ -1,24 +1,24 @@
 # stock-market-forecasting
 
-# PLAN
-Klepnąć mocka przyjmującego linijkę nagłówków porozdzielanych spacjami, a zwracać będzie [0.8, 0.2, 0.1] <- p-stwa klas.
+## Prerequisites
+Before you start using scripts in this repository you have to configure your workspace. We've limited ourselves to only 
+use Python 3. So you have to be sure that you've installed it. Some of the requirements are listed in `requirements.txt`
+file. These you can install with `pip` or `conda`. Moreover:
+* make sure that all the data downloaded from [Kaggle](https://www.kaggle.com/aaron7sun/stocknews) are unpacked in 
+`./data/raw` directory,
+* the information about GloVe model that we've used in modelling can be found 
+[here](https://spacy.io/models/en#section-en_core_web_lg),
+* for running RNN models you have to install [cuDNN](https://developer.nvidia.com/cudnn) or replace `CuDNNGRU` layers
+with plain old `GRU` (slower).
 
-1. ++ Zamiana na klasy. Różne okresy agregacji danych (dzień, 3 dni, tydzień).
-2. Czyszczenie korpusu:
-    1. ++ (Faja) Wykorzystać słownik skrótów do czyszczenia korpusu (https://public.oed.com/how-to-use-the-oed/abbreviations).
-    2. -- (Janusz) https://github.com/savoirfairelinux/num2words wykorzystać tę bibliotekę do zamiany wartości liczbowych na słowa.
-    3. -- (Tomek) Wykorzystanie słownika symboli walut do zamiany ich na słowa.
-3. Reprezentacja wektorowa danych:
-    1. ++ Wektoryzacja Doc2Vec (./scripts/features/vectorize_doc2vec.py), GloVe (./scripts/features/vectorize_glove.py).
-    2. +- Lemmatyzacja, stemming (./scripts/experiments/reduce_lexicon.py).
-    3. -- (Faja) Rozszerzenie wektora na wejściu sieci o topiki zakodowane one-hotem 
-    (https://towardsdatascience.com/topic-modelling-in-python-with-nltk-and-gensim-4ef03213cd21) oraz o wartości
-    indeksu giełdowego w dniach poprzednich.
-4. Modele:
-    1. +- (Janusz - multiclass) Regresja logistyczna.
-    2. +- (Tomek - multiclass) SVM.
-    3. ++ Sieć neuronowa.
-5. ++ (Faja) Ewaluacja:
-    1. Accuracy.
-    2. Uśredniona precyzja i recall (dla każdej klasy policzyć i uśrednić).
-    3. Macierz pomyłek.
+## How to work with this repository?
+
+All scripts should be run from the repository's root directory!
+
+1. Download and unzip all raw data from [Kaggle](https://www.kaggle.com/aaron7sun/stocknews) to `./data/raw`.
+2. Run `./scripts/data/change_classes.py` to assign labels to dataset based on stock open and close value.
+3. Prepare data used for corpus cleaning by running `./scripts/data/prepare_*.py` and than clean corpus with 
+`./scripts/clean_corpus.py`.
+4. If you intend to run a GloVe or Doc2Vec model you must first run a proper script from `./scripts/features` 
+directory.
+5. Now you should be able to run scripts from `./experiments` and `./scripts/model` directories.

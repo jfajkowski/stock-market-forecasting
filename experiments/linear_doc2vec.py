@@ -1,12 +1,10 @@
 import pandas as pd
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
 
-df = pd.read_csv('../scripts/data/data/processed/Doc2Vec.csv', lineterminator='\n', sep=',')
+df = pd.read_csv('./data/processed/Doc2Vec.csv', lineterminator='\n', sep=',')
 df.columns = df.columns.str.strip()
-
-print('Number of samples:', len(df))
 
 X = df.loc[:, df.columns != 'Class'].values
 y = df['Class']

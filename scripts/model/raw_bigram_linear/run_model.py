@@ -4,7 +4,7 @@ import pickle
 import socket
 
 TCP_HOST = "127.0.0.1"
-TCP_PORT = 10000
+TCP_PORT = 10002
 BUFFER_SIZE = 1024
 QUEUE_SIZE = 128
 
@@ -42,8 +42,8 @@ while True:
 
         articles = sorted(model_input['articles'], key=lambda x: x['date'])
 
-        raw = list(map(lambda x: x['header'], articles))
-        X = vectorizer.transform([raw[-1]])
+        raw = ' '.join((map(lambda x: x['header'], articles)))
+        X = vectorizer.transform([raw])
         y = classifier.predict_proba(X)
         model_output = y[0]
         model_output_line = str(list(model_output))

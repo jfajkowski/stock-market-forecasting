@@ -13,8 +13,6 @@ split = 0.8
 
 df = pd.read_csv('./data/processed/GloVe.csv')
 
-print('Number of samples:', len(df))
-
 X = df.loc[:, df.columns != 'Class'].values
 y = to_categorical(df.loc[:, 'Class'])
 

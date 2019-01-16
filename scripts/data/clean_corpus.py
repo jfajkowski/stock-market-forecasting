@@ -121,7 +121,7 @@ def abbreviate(text):
     return JOIN_PATTERN.join(correct_words)
 
 
-corpus = corpus.applymap(abbreviate)
+# corpus = corpus.applymap(abbreviate)
 
 # %% Replace currency symbols with words
 currency_dict = {}
@@ -160,7 +160,7 @@ def numbers_to_words(text):
     return re.sub(r" +", " ", text)
 
 
-corpus = corpus.applymap(numbers_to_words)
+# corpus = corpus.applymap(numbers_to_words)
 
 # %% Tokenize documents using NLTK
 corpus = corpus.applymap(lambda document: word_tokenize(document))

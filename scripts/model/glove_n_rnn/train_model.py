@@ -9,15 +9,16 @@ batch_size = 128
 epochs_num = 30
 split = 0.8
 
+# Load data
 df = pd.read_csv('./data/processed/GloVe.csv')
-
-print('Number of samples:', len(df))
 
 X = df.loc[:, df.columns != 'Class'].values
 y = to_categorical(df.loc[:, 'Class'])
 
+# Split it into test and training sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=split, shuffle=False)
 
+# Generate few models with different window sizes
 for window_size in [1, 3, 7]:
     train_generator = TimeseriesGenerator(X_train, y_train,
                                           length=window_size,

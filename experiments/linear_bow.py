@@ -1,10 +1,10 @@
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
 
-df = pd.read_csv('./data/processed/Stripped.csv')
+df = pd.read_csv('.data/interim/Corpus_Cleaned.csv')
 
 raw = df.loc[:, 'Top1':'Top25'].apply(lambda x: ' '.join([str(s) for s in x]), axis=1)
 y = df['Label']
